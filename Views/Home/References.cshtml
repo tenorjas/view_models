@@ -10,3 +10,11 @@
     <input type="text" name = "website" placeholder="Website Link URL"/> <br />
     <button type="submit">Add Message</button>
 </form>
+<div>
+    @model List<ReferenceModel>
+        @foreach(var item in Model)
+        {
+            <p>@item.Message - @item.Name</p>
+            <p>Email - @item.Email Website - @item.Website</p>
+        }
+</div>

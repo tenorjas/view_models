@@ -63,33 +63,21 @@ namespace view_models.Controllers
         public IActionResult References()
         {
             var commentList = new List<ReferenceModel>();
-            var firstComment = new ReferenceModel
-            {
-                Message = "hi there",
-                Name = "tom",
-                Email = "tom@tomtom.com",
-                Website = "tom.com"
-            };
-            commentList.Add(firstComment);
+            
 
             using (var reader = new StreamReader(System.IO.File.Open("comments.csv", FileMode.Open)))
                 while (reader.Peek() >= 0)
                 {
-                    var objMessage = string.Empty;
-                    var objName = string.Empty;
-                    var objEmail = string.Empty;
-                    var objWebsite = string.Empty;
-
-                    var user = reader.ReadLine();
+                    var user = reader.ReadToEnd();
                     var data = user.Split(',');
-                    for (int i = 0; i < data.Length; i+=4)
+                    for (int i = 0; i < data.Length -3; i+=4)
                     {
-                        objMessage = data[i];
-                        objName = data[i+1];
-                        objEmail = data[i+2];
-                        objWebsite = data[i+3];
-                    
-                        
+                        var newComment = new ReferenceModel();
+                        newComment.Message = data[i];
+                        newComment.Name = data[i+1];
+                        newComment.Email = data[i+2];
+                        newComment.Website = data[i+3];
+                        commentList.Add(newComment);
                     }
                 }
             return View(commentList);
@@ -112,6 +100,18 @@ namespace view_models.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        
+        public IActionResult References(string message, string name, string email, string website)
+        {
+            using (var writer = new StreamWriter(System.IO.File.Open($"comments.csv", FileMode.Append)))
+            {
+                writer.WriteLine($"'{message}',{name},{email},{website},{DateTime.Now},");
+            }
+            var bob = new ReferenceModel();
+            var commentList = bob.Builder();
+            return View(commentList);
         }
     }
 }
