@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -58,11 +59,40 @@ namespace view_models.Controllers
             return View(prices);
         }
 
+        [HttpPost]
         public IActionResult References()
         {
-            ViewData["Message"] = "Look at all the people who like me:";
+            var commentList = new List<ReferenceModel>();
+            var firstComment = new ReferenceModel
+            {
+                Message = "hi there",
+                Name = "tom",
+                Email = "tom@tomtom.com",
+                Website = "tom.com"
+            };
+            commentList.Add(firstComment);
 
-            return View();
+            using (var reader = new StreamReader(System.IO.File.Open("comments.csv", FileMode.Open)))
+                while (reader.Peek() >= 0)
+                {
+                    var objMessage = string.Empty;
+                    var objName = string.Empty;
+                    var objEmail = string.Empty;
+                    var objWebsite = string.Empty;
+
+                    var user = reader.ReadLine();
+                    var data = user.Split(',');
+                    for (int i = 0; i < data.Length; i+=4)
+                    {
+                        objMessage = data[i];
+                        objName = data[i+1];
+                        objEmail = data[i+2];
+                        objWebsite = data[i+3];
+                    
+                        
+                    }
+                }
+            return View(commentList);
         }
 
         public IActionResult Contact()
