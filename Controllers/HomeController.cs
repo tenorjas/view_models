@@ -59,9 +59,10 @@ namespace view_models.Controllers
             return View(prices);
         }
 
-        [HttpPost]
+        
         public IActionResult References()
         {
+            Console.WriteLine("I am in the other References.");
             var commentList = new List<ReferenceModel>();
             
 
@@ -102,9 +103,10 @@ namespace view_models.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        
+        [HttpPost]
         public IActionResult References(string message, string name, string email, string website)
         {
+            Console.WriteLine($"The value of message is {message}.");
             using (var writer = new StreamWriter(System.IO.File.Open($"comments.csv", FileMode.Append)))
             {
                 writer.WriteLine($"'{message}',{name},{email},{website},{DateTime.Now},");
